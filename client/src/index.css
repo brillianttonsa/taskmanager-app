@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+
+@layer components{
+  .nav-links{
+    @apply text-gray-600 hover:text-emerald-600 transition-colors
+  }
+  .container{
+    @apply mx-auto px-4 sm:px-6 lg:px-8
+  }
+}
