@@ -3,7 +3,7 @@ import { CheckSquare, Mail, Phone, MapPin, Instagram, Twitter, Facebook  } from 
 function Footer() {
 
   return (
-    <footer id="contact" className="bg-gray-900 text-white">
+    <footer id="contacts" className="bg-gray-900 text-white">
       <div className="container  py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>

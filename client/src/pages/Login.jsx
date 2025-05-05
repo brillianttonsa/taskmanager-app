@@ -1,4 +1,3 @@
-"use client"
 
 import { useState } from "react"
 import { Eye, EyeOff, XCircle } from "lucide-react"
@@ -43,26 +42,39 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
+  
     if (validateForm()) {
       setIsSubmitting(true)
-
+  
       try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500))
-
-        console.log("Login submitted successfully:", formData)
-
-        // Redirect to dashboard or home page after successful login
-        // window.location.href = "/dashboard"
+        const response = await fetch("http://localhost:5000/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        })
+  
+        const data = await response.json()
+  
+        if (response.ok) {
+          console.log("Login successful:", data)
+          // Example: Save user data or token if using JWT
+          // localStorage.setItem("user", JSON.stringify(data.user))
+          // Redirect
+          // window.location.href = "/dashboard"
+        } else {
+          setErrors({ form: data.error || "Login failed" })
+        }
       } catch (error) {
         console.error("Error logging in:", error)
-        setErrors({ form: "Invalid email or password. Please try again." })
+        setErrors({ form: "Something went wrong. Please try again." })
       } finally {
         setIsSubmitting(false)
       }
     }
   }
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -174,26 +186,6 @@ export default function Login() {
             >
               {isSubmitting ? (
                 <span className="flex items-center">
-                  <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
                   Signing in...
                 </span>
               ) : (
@@ -203,49 +195,7 @@ export default function Login() {
           </div>
         </form>
 
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or continue with</span>
-            </div>
-          </div>
-
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            <div>
-              <a
-                href="#"
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-              >
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M10 0C4.477 0 0 4.477 0 10c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0110 4.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C17.14 18.163 20 14.418 20 10c0-5.523-4.477-10-10-10z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </a>
-            </div>
-
-            <div>
-              <a
-                href="#"
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-              >
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 20c5.523 0 10-4.477 10-10S15.523 0 10 0 0 4.477 0 10s4.477 10 10 10z" fill="#4285F4" />
-                  <path d="M10 20c5.523 0 10-4.477 10-10S15.523 0 10 0 0 4.477 0 10s4.477 10 10 10z" fill="white" />
-                  <path
-                    d="M14.977 10.654h-2.321v-1.5h4.075c.12.67.169 1.355.145 2.037-.045 1.495-.555 2.856-1.432 3.857l-1.12-1.12c.5-.595.805-1.39.835-2.273h-2.07v4.274h-1.5v-4.274H9.523v-1.5h2.066V8.154c0-1.66-1.356-3-3.023-3h-.02c-1.659.008-3 1.35-3 3.008v.004c0 1.088.586 2.08 1.534 2.618l-.77 1.295a4.5 4.5 0 01-2.264-3.91c0-2.485 2.018-4.5 4.5-4.5.079 0 .158.002.236.006 2.431.08 4.382 2.07 4.382 4.494v1.485h1.813z"
-                    fill="#EA4335"
-                  />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
+        
       </div>
     </div>
   )
